@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	STRING  = "+"
-	ERROR   = "-"
-	INTEGER = "."
-	BULK    = "$"
-	ARRAY   = "*"
+	STRING  = '+'
+	ERROR   = '-'
+	INTEGER = '.'
+	BULK    = '$'
+	ARRAY   = '*'
 )
 
 type Value struct {
