@@ -1,29 +1,38 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"strconv"
-	"strings"
+	"net"
 )
 
 func main() {
-	input := "$5\r\nAhmet\r\n"
-	reader := bufio.NewReader(strings.NewReader(input))
+	fmt.Println("Listening on port :6379")
 
-	b, _ := reader.ReadByte()
-
-	if b != '$' {
-		fmt.Println("Invalid Type Expected bulk string")
+	// Create a new server
+	l, err := net.Listen("tcp", ":6379")
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
-	size, _ := reader.ReadByte()
-	strSize, _ := strconv.ParseInt(string(size), 10, 64)
+	// Listen for connections
+	conn, err := l.Accept()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer conn.Close()
 
-	reader.ReadByte()
-	reader.ReadByte()
+	for {
+		resp := NewResp(conn)
+		value, err := resp.Read()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 
-	name := make([]byte, strSize)
-	reader.Read(name)
+		fmt.Println(value)
 
-	fmt.Println("Name is", string(name))
+		// ignore request and send back a PONG
+		conn.Write([]byte("+OK\r\n"))
+	}
 }
