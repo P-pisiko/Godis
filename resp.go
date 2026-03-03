@@ -10,7 +10,7 @@ import (
 const (
 	STRING  = '+'
 	ERROR   = '-'
-	INTEGER = '.'
+	INTEGER = ':'
 	BULK    = '$'
 	ARRAY   = '*'
 )
