@@ -21,7 +21,7 @@ func ping(args []Value) Value {
 
 func set(args []Value) Value {
 	if len(args) != 2 {
-		return Value{typ: "ERROR", str: "Wrong number of arguments for 'set' command"}
+		return Value{typ: "error", str: "Wrong number of arguments for 'set' command"}
 	}
 
 	key := args[0].bulk
@@ -35,8 +35,8 @@ func set(args []Value) Value {
 }
 
 func get(args []Value) Value {
-	if len(args) != 2 {
-		return Value{typ: "ERROR", str: "Wrong number of arguments for 'get' command"}
+	if len(args) != 1 {
+		return Value{typ: "error", str: "Wrong number of arguments for 'get' command"}
 	}
 
 	key := args[0].bulk
