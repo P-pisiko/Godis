@@ -31,6 +31,14 @@ func NewResp(rd io.Reader) *Resp {
 	return &Resp{reader: bufio.NewReader(rd)}
 }
 
+type Writer struct {
+	writer io.Writer
+}
+
+func NewWriter(w io.Writer) *Writer {
+	return &Writer{writer: w}
+}
+
 func (r Resp) readLine() (line []byte, n int, err error) {
 	for {
 		b, err := r.reader.ReadByte()
@@ -75,6 +83,17 @@ func (r *Resp) Read() (Value, error) {
 		fmt.Printf("Unknown type: %v", string(_type))
 		return Value{}, nil
 	}
+}
+
+func (w *Writer) Write(v Value) error {
+	var bytes = v.Marshal()
+
+	_, err := w.writer.Write(bytes)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *Resp) readArray() (Value, error) {
