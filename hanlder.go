@@ -42,6 +42,7 @@ func get(args []Value) Value {
 	key := args[0].bulk
 	SETsMu.RLock()
 	value, err := SETs[key]
+	SETsMu.RUnlock()
 
 	if !err {
 		return Value{typ: "null"}
