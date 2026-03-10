@@ -21,7 +21,7 @@ func main() {
 		conn, err := l.Accept()
 		if err != nil {
 			fmt.Println(err)
-			return
+			continue
 		}
 		go ConnectionHandler(conn)
 	}
