@@ -15,12 +15,19 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+
 	// Listen for connections
-	conn, err := l.Accept()
-	if err != nil {
-		fmt.Println(err)
-		return
+	for {
+		conn, err := l.Accept()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		go ConnectionHandler(conn)
 	}
+}
+
+func ConnectionHandler(conn net.Conn) {
 	defer conn.Close()
 
 	for {
