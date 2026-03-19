@@ -24,7 +24,7 @@ func main() {
 	defer aof.Close()
 
 	// Recover state from AOF
-	aof.Read(func(value Value) {
+	if err := aof.Read(func(value Value) {
 		command := strings.ToUpper(value.array[0].bulk)
 		args := value.array[1:]
 
@@ -35,7 +35,10 @@ func main() {
 		}
 
 		handler(args)
-	})
+	}); err != nil {
+		fmt.Println("AOF recovery error:", err)
+		return
+	}
 
 	// Listen for connections
 	for {
@@ -81,7 +84,7 @@ func ConnectionHandler(conn net.Conn, aof *Aof) {
 			continue
 		}
 
-		if command == "SET" || command == "HSET" {
+		if command == "SET" || command == "HSET" || command == "DEL" || command == "HDEL" {
 			aof.Write(value)
 		}
 
