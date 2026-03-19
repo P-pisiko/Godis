@@ -9,8 +9,8 @@ var Handlers = map[string]func([]Value) Value{
 	"HSET":    hset,
 	"HGET":    hget,
 	"HGETALL": hgetall,
-	"DELETE":  del,
-	"HDELETE": hdel,
+	"DEL":     del,
+	"HDEL":    hdel,
 }
 
 var SETs = map[string]string{}
