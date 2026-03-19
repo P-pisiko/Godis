@@ -18,13 +18,13 @@ redis-cli -p 6379
 - [x] GET
 - [x] SET
 - [x] DEL
+- [X] HDEL
 - [ ] EXISTS
 - [ ] EXPIRE
 - [ ] TTL
 - [x] HSET
 - [x] HGET
 - [x] HGETALL
-- [ ] HDEL
 - [ ] HLEN
 - [ ] HKEYS
 - [ ] HVALS

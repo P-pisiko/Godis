@@ -9,7 +9,12 @@ var Handlers = map[string]func([]Value) Value{
 	"HSET":    hset,
 	"HGET":    hget,
 	"HGETALL": hgetall,
+	"DELETE":  del,
+	"HDELETE": hdel,
 }
+
+var SETs = map[string]string{}
+var SETsMu = sync.RWMutex{}
 
 func ping(args []Value) Value {
 	if len(args) == 0 {
@@ -18,9 +23,6 @@ func ping(args []Value) Value {
 
 	return Value{typ: "string", str: args[0].bulk}
 }
-
-var SETs = map[string]string{}
-var SETsMu = sync.RWMutex{}
 
 func set(args []Value) Value {
 	if len(args) != 2 {
@@ -116,4 +118,50 @@ func hgetall(args []Value) Value {
 	}
 
 	return Value{typ: "array", array: values}
+}
+
+func del(args []Value) Value {
+	if len(args) == 0 {
+		return Value{typ: "error", str: "ERR wrong number of arguments for 'del' command"}
+	}
+
+	var deleted int
+
+	SETsMu.Lock()
+	for _, arg := range args {
+		key := arg.bulk
+		if _, exists := SETs[key]; exists {
+			delete(SETs, key)
+			deleted++
+		}
+	}
+	SETsMu.Unlock()
+
+	return Value{typ: "integer", num: deleted}
+}
+
+func hdel(args []Value) Value {
+	if len(args) < 2 {
+		return Value{typ: "error", str: "ERR wrong number of arguments for 'hdel' command"}
+	}
+
+	hash := args[0].bulk
+	var deleted int
+
+	HSETsMu.Lock()
+	if fields, exists := HSETs[hash]; exists {
+		for _, arg := range args[1:] {
+			key := arg.bulk
+			if _, fieldExists := fields[key]; fieldExists {
+				delete(fields, key)
+				deleted++
+			}
+		}
+		if len(HSETs[hash]) == 0 {
+			delete(HSETs, hash)
+		}
+	}
+	HSETsMu.Unlock()
+
+	return Value{typ: "integer", num: deleted}
 }
