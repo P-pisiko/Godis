@@ -31,3 +31,8 @@ redis-cli -p 6379
 
 ## Data Persistence
 Currently Godis uses Append Only File to persist state.
+
+## Licence
+
+---
+### MIT
