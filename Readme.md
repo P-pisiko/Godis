@@ -26,8 +26,8 @@ redis-cli -p 6379
 - [x] HGET
 - [x] HGETALL
 - [ ] HLEN
-- [ ] HKEYS
-- [ ] HVALS
+- [x] HKEYS
+- [x] HVALS
 
 ## Data Persistence
 Currently Godis uses Append Only File to persist state.
