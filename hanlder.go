@@ -12,6 +12,8 @@ var Handlers = map[string]func([]Value) Value{
 	"DEL":     del,
 	"HDEL":    hdel,
 	"EXITS":   exists,
+	"HKEYS":   hkeys,
+	"HVALS":   hvals,
 }
 
 var SETs = map[string]string{}
@@ -168,7 +170,7 @@ func hdel(args []Value) Value {
 }
 
 func exists(args []Value) Value {
-	if len(args) <= 0 {
+	if len(args) == 0 {
 		return Value{typ: "error", str: "ERR wrong number of arguments for 'exits' command"}
 	}
 	var count int
@@ -181,4 +183,49 @@ func exists(args []Value) Value {
 	}
 	SETsMu.RUnlock()
 	return Value{typ: "integer", num: count}
+}
+
+func hkeys(args []Value) Value {
+	if len(args) != 1 {
+		return Value{typ: "error", str: "ERR wrong number of arguments for 'hkeys' command"}
+	}
+	hash := args[0].bulk
+
+	HSETsMu.RLock()
+	fields, ok := HSETs[hash]
+	HSETsMu.RUnlock()
+
+	if !ok {
+		return Value{typ: "array", array: []Value{}}
+	}
+
+	values := []Value{}
+	for k := range fields {
+		values = append(values, Value{typ: "bulk", bulk: k})
+	}
+
+	return Value{typ: "array", array: values}
+}
+
+func hvals(args []Value) Value {
+	if len(args) != 1 {
+		return Value{typ: "error", str: "ERR wrong number of arguments for 'hvals' command"}
+	}
+
+	hash := args[0].bulk
+
+	HSETsMu.RLock()
+	fields, ok := HSETs[hash]
+	HSETsMu.RUnlock()
+
+	if !ok {
+		return Value{typ: "array", array: []Value{}}
+	}
+
+	values := []Value{}
+	for _, v := range fields {
+		values = append(values, Value{typ: "bulk", bulk: v})
+	}
+
+	return Value{typ: "array", array: values}
 }
