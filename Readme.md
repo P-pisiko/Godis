@@ -19,7 +19,7 @@ redis-cli -p 6379
 - [x] SET
 - [x] DEL
 - [X] HDEL
-- [ ] EXISTS
+- [X] EXISTS
 - [ ] EXPIRE
 - [ ] TTL
 - [x] HSET
